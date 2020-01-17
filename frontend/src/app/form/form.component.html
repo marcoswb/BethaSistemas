@@ -1,0 +1,46 @@
+<h3>Cadastrar Novo Usuário</h3>
+
+<form [formGroup]="form">
+  <div class="form-group">
+    <label for="name">Nome</label>
+    <input 
+      type="text" 
+      class="form-control" 
+      id="name" 
+      placeholder="Insira seu nome"
+      formControlName="name">
+  </div>
+  <div class="form-group">
+    <label for="cpf-cnpj">CPF ou CNPJ</label>
+    <input 
+      type="text" 
+      class="form-control" 
+      id="cpf_cnpj" 
+      placeholder="Insira seu CPF ou CNPJ"
+      formControlName="cpf_cnpj"
+      required>
+  </div>
+  <div class="form-group">
+    <label for="address">Endereço</label>
+    <input 
+      type="text" 
+      class="form-control" 
+      id="address" 
+      placeholder="Insira seu Endereço"
+      formControlName="address">
+      <button (click)="addAddress()">Adicionar</button>
+</div>
+  <div class="form-group">
+    <label for="telephone">Telefone</label>
+    <input 
+      type="text" 
+      class="form-control" 
+      id="telephone" 
+      placeholder="Insira seu Telefone"
+      formControlName="telephone">
+      <button type="button" (click)="addTelephone()">Adicionar</button>
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-outline-success" [disabled]="!form.valid" (click)="onSubmit()">Success</button>
+  </div>
+</form>
