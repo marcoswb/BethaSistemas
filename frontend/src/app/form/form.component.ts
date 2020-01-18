@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 
 import { User } from 'src/models/user';
+import { ApiService } from '../api.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-form',
@@ -21,7 +23,10 @@ export class FormComponent implements OnInit {
   address: string;
   telephone: string;
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private service: ApiService
+  ) { }
 
   ngOnInit() {
 
@@ -46,9 +51,34 @@ export class FormComponent implements OnInit {
 
   onSubmit(){
     this.userFinal = this.verificarCampos(this.form.value);
+    
+    // atualizar usuario funcionando
+    // this.service.updateAluno(37 ,this.userFinal).subscribe(
+    //   () => {
+    //     console.log('atualizado');
+    //   }
+    // )
 
-    console.log(this.userFinal);
-    this.form.reset();
+    // apagar usuario funcionando
+    this.service.deleteAlunoById(37).subscribe(
+      () => {
+        console.log('apagou')
+      }
+    )
+
+    // busca por id funcionando
+    // this.service.getAlunoById(37).subscribe(
+    //   (res) => {
+    //     console.log(res);
+    //   }
+    // )
+
+    // criar usuario não funciona
+    // this.service.createAluno(this.userFinal).subscribe(
+    //   () => {
+    //     console.log('cadastrou');
+    //   }
+    // )
   }
 
   verificarCampos(object) {

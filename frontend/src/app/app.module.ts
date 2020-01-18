@@ -5,11 +5,11 @@ import { CommonModule } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CarouselComponent } from './carousel/carousel.component';
-import { SidenavComponent } from './sidenav/sidenav.component';
 import { FormComponent } from './form/form.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
@@ -20,7 +20,6 @@ import { HomeComponent } from './home/home.component';
   declarations: [
     AppComponent,
     CarouselComponent,
-    SidenavComponent,
     FormComponent,
     AddUserComponent,
     EditUserComponent,
@@ -36,6 +35,7 @@ import { HomeComponent } from './home/home.component';
     BrowserAnimationsModule,
     BsDropdownModule.forRoot(),
     CarouselModule.forRoot(),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
