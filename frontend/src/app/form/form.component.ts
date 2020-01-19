@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core'
+import { FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { ActivatedRoute, Params } from '@angular/router'
 
-import { User } from 'src/models/user';
-import { ApiService } from '../api.service';
-import { Observable } from 'rxjs';
+import { User } from 'src/models/user'
+import { Address } from 'src/models/address'
+import { ApiService } from '../api.service'
 
 @Component({
   selector: 'app-form',
@@ -12,24 +13,26 @@ import { Observable } from 'rxjs';
 })
 export class FormComponent implements OnInit {
 
-  form: FormGroup;
-  listAdrress: Array<String> = [];
-  listTelephone: Array<String> = [];
-  user: User;
-  userFinal: User;
-  name: string;
-  cpf: string;
-  cnpj: string;
-  address: string;
-  telephone: string;
+  form: FormGroup
+  form_title: string = "Cadastrar Usuário"
+  form_address: string = "Endereço"
+  
+  id: number
+  editUser: boolean = false
+  user: User
+  address: Address
+
+  listAddress: Address[] = []
+  listTelephone: Array<String> = []
+  indexSelect: number = -1;
 
   constructor(
     private formBuilder: FormBuilder,
-    private service: ApiService
+    private service: ApiService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
-
     this.form = this.formBuilder.group({
       name: [null, Validators.required],
       cpf_cnpj: [null, Validators.required],
@@ -37,75 +40,161 @@ export class FormComponent implements OnInit {
       telephone: [null, Validators.required],
     })
 
+    this.checkEditUser()    
   }
 
-  addAddress() {
-    this.listAdrress.push(this.form.value.address);
-    console.log(this.form);
+  checkEditUser() {
+    this.route.params.forEach((params: Params) => {
+      this.id = params['id']
+    })
+
+    if(this.id != undefined) {
+      this.form_title = "Atualizar Usuário"
+      this.form_address = "Endereço principal escolhido anteriormente"
+      this.editUser = true
+      this.getUserById(this.id)
+    }
   }
 
-  addTelephone() {
-    this.listTelephone.push(this.form.value.telephone);
-    console.log(this.listTelephone);
+  getUserById(id) {
+    this.service.getUserById(id).subscribe(
+      (response) => {
+       this.populateForm(response)
+      },
+      error => {
+        alert('Não foi possível encontrar o Usuário!')
+      }
+    )
+  }
+
+  populateForm(user) {
+    let name_form = user.name
+    let cpf_cnpj_form = null
+    let address_form = null
+    let telephone_form = null
+
+    if(user.cpf != null) {
+      cpf_cnpj_form = user.cpf
+    } else if(user.cnpj != null) {
+      cpf_cnpj_form = user.cnpj
+    }
+
+    const convertAddress = JSON.parse(user.address)
+    const convertTelephone = JSON.parse(user.telephone)
+
+    this.listAddress = convertAddress
+    this.listTelephone = convertTelephone
+    
+    this.listAddress.map(address => {
+      if(address.main = true) {
+        this.indexSelect = address.id
+        address_form = address.description
+      }
+    })
+
+    telephone_form = this.listTelephone[0]
+
+    this.form.patchValue({
+      name: name_form,
+      cpf_cnpj: cpf_cnpj_form,
+      address: address_form,
+      telephone: telephone_form
+    })
+  }
+
+  onAddAddress() {
+    let id = this.listAddress.length
+
+    this.address = new Address(id, this.form.value.address, false)
+    this.listAddress.push(this.address)    
+  }
+
+  onAddressMain(event) {
+    this.listAddress.map((address, index) => {
+      this.listAddress[index].main = false
+    })
+
+    const selectOption = event.target['options']
+    this.indexSelect = selectOption.selectedIndex
+  }
+
+  onAddTelephone() {
+    this.listTelephone.push(this.form.value.telephone)
   }
 
   onSubmit(){
-    this.userFinal = this.verificarCampos(this.form.value);
-    
-    // atualizar usuario funcionando
-    // this.service.updateAluno(37 ,this.userFinal).subscribe(
-    //   () => {
-    //     console.log('atualizado');
-    //   }
-    // )
-
-    // apagar usuario funcionando
-    this.service.deleteAlunoById(37).subscribe(
-      () => {
-        console.log('apagou')
-      }
-    )
-
-    // busca por id funcionando
-    // this.service.getAlunoById(37).subscribe(
-    //   (res) => {
-    //     console.log(res);
-    //   }
-    // )
-
-    // criar usuario não funciona
-    // this.service.createAluno(this.userFinal).subscribe(
-    //   () => {
-    //     console.log('cadastrou');
-    //   }
-    // )
+    this.user = this.checkFields()
+    if(this.id != undefined) {
+      this.service.updateUser(this.id ,this.user).subscribe(
+        success => {
+          alert('Usuário atualizado!')
+          this.resetForm()
+        },
+        error => {
+          alert('Erro ao atualizar Usuário!')
+        }
+      )
+    } else {
+      this.service.createUser(this.user).subscribe(
+        success => {
+          alert('Usuário cadastrado!')
+          this.resetForm()
+        },
+        error => {
+          alert('Erro ao cadastrar Usuário!')
+        }
+      )
+    }
   }
 
-  verificarCampos(object) {
-    this.name = object.name;
+  checkFields() {
+    let name = this.form.get('name').value
+    let cpf = null
+    let cnpj = null
+    let address = null
+    let telephone = null
 
-    if(object.cpf_cnpj.length >= 14) {
-      this.cnpj = object.cpf_cnpj;
-      this.cpf = null;
-    } else if(object.cpf_cnpj.length <= 11) {
-      this.cpf = object.cpf_cnpj;
-      this.cnpj = null;
+    if(this.form.get('cpf_cnpj').value.length >= 14) {
+      cnpj = this.form.get('cpf_cnpj').value
+    } else if(this.form.get('cpf_cnpj').value.length <= 11) {
+      cpf = this.form.get('cpf_cnpj').value
     }
     
-    if(this.listAdrress.length < 1) {
-      this.address = object.address;
+    if(this.listAddress.length < 1) {
+      address = new Address(0, this.form.get('address').value, true)
+      this.listAddress.push(address)
+      address = JSON.stringify(this.listAddress)
     } else {
-      this.address = JSON.stringify(this.listAdrress);
+      if(this.indexSelect == -1) {
+        this.listAddress[0].main = true
+      } else {
+        this.listAddress[this.indexSelect].main = true
+      }
+      
+      address = JSON.stringify(this.listAddress)
     }
     
     if(this.listTelephone.length < 1) {
-      this.telephone = object.telephone;
+      telephone = this.form.get('telephone').value
+      this.listTelephone.push(telephone)
+      telephone = JSON.stringify(this.listTelephone)
     } else {
-      this.telephone = JSON.stringify(this.listTelephone);
+      telephone = JSON.stringify(this.listTelephone)
     }
     
-    this.user = new User(1, this.name, this.cpf, this.cnpj, this.address, this.telephone);
+    const user = new User(1, name, cpf, cnpj, address, telephone)
     
-    return this.user;
+    return user
+  }
+
+  resetForm() {
+    this.form.patchValue({
+      name: null,
+      cpf_cnpj: null,
+      address: null,
+      telephone: null
+    })
+    this.listAddress = []
+    this.listTelephone = []
   }
 }

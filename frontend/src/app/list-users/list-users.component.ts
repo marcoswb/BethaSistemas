@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 
-import { ApiService } from '../api.service';
-import { User } from 'src/models/user';
-import { Observable } from 'rxjs';
+import { ApiService } from '../api.service'
+import { User } from 'src/models/user'
+import { Observable } from 'rxjs'
+import { Router } from '@angular/router'
+import { Address } from 'src/models/address'
 
 @Component({
   selector: 'app-list-users',
@@ -11,14 +13,72 @@ import { Observable } from 'rxjs';
 })
 export class ListUsersComponent implements OnInit {
 
-  constructor(private service: ApiService) { }
+  constructor(
+    private service: ApiService,
+    private router: Router
+  ) { }
 
-  users: User[];
+  users: User[] = []
+  addressJson: string[] = []
+  telephoneJson: string[] = []
 
-  users$: Observable<User[]>;
+  listAddress: any[] = []
+  listTelephone: any[] = []
+
+  id: any
 
   ngOnInit() {
-    // this.users$ = this.service.list();
-    this.users$ = this.service.getAllAlunos();
+    
+    this.onLoadAllUsers()
   }
+
+  onLoadAllUsers() {
+    this.service.getAllUsers().subscribe(
+      (response) => {
+        this.convertFields(response)
+      }
+    )
+  }
+
+  convertFields(users) {
+    users.map(user => {
+      user.address = JSON.parse(user.address)
+      user.telephone = JSON.parse(user.telephone)
+    })
+    this.users = users
+  }
+
+  onFindUserById() {
+    if(this.id != undefined) {
+      this.service.getUserById(this.id).subscribe(
+        (response) => {
+          if(response != undefined) {
+            this.router.navigate(['edit-user', response.id])
+          }
+        },
+        error => {
+          alert('Usuário não existe!')
+        }
+      )
+    } else {
+      alert('Digite um ID para pesquisa!');
+    }
+  }
+
+  onRemoveUser(id) {
+    this.service.deleteUser(id).subscribe(
+      success => {
+        alert('Usuário apagado!')
+        this.onLoadAllUsers()
+      },
+      error => {
+        alert('Erro ao Apagar Usuário!')
+      }
+    )
+  }
+
+  onKeyPress(event) {
+    this.id = event.target.value
+  }
+  
 }

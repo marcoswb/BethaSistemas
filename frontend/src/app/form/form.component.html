@@ -1,4 +1,4 @@
-<h3>Cadastrar Novo Usuário</h3>
+<h3>{{ form_title }}</h3>
 
 <form [formGroup]="form">
   <div class="form-group">
@@ -11,24 +11,32 @@
       formControlName="name">
   </div>
   <div class="form-group">
-    <label for="cpf-cnpj">CPF ou CNPJ</label>
+    <label for="cpf_cnpj">CPF ou CNPJ</label>
     <input 
       type="text" 
       class="form-control" 
       id="cpf_cnpj" 
       placeholder="Insira seu CPF ou CNPJ"
       formControlName="cpf_cnpj"
-      required>
+      required
+      aria-describedby="cpf_cnpjHelp">
+      <small id="cpf_cnpjHelp" class="form-text text-muted">Nunca vamos compartilhar seu CPF ou CNPJ, com ninguém.</small>
   </div>
   <div class="form-group">
-    <label for="address">Endereço</label>
+    <label for="address">{{ form_address }}</label>
     <input 
       type="text" 
       class="form-control" 
       id="address" 
       placeholder="Insira seu Endereço"
       formControlName="address">
-      <button (click)="addAddress()">Adicionar</button>
+      <button type="button" class="btn btn-outline-primary btn-sm" (click)="onAddAddress()">Adicionar outro endereço</button>
+      <div class="form-group">
+        <label for="listAddress">Selecione um endereço com principal</label>
+        <select class="form-control" id="listAddress" type="text" (click)="onAddressMain($event)">
+          <option *ngFor="let address of listAddress">{{ address.description }}</option>
+        </select>
+      </div>
 </div>
   <div class="form-group">
     <label for="telephone">Telefone</label>
@@ -38,10 +46,16 @@
       id="telephone" 
       placeholder="Insira seu Telefone"
       formControlName="telephone">
-      <button type="button" (click)="addTelephone()">Adicionar</button>
+      <button type="button" class="btn btn-outline-primary btn-sm" (click)="onAddTelephone()">Adicionar outro telefone</button>
+      <div class="form-group">
+        <label for="listTelephone">Telefones já adicionados</label>
+        <select multiple class="form-control" id="listTelephone">
+          <option *ngFor="let telephone of listTelephone">{{ telephone }}</option>
+        </select>
+      </div>
   </div>
   <div class="form-group">
-    <button type="submit" class="btn btn-outline-success"  [disabled]="!form.valid" (click)="onSubmit()">Success</button>
-    <button type="submit" class="btn btn-outline-success">Cancel</button>
+    <button type="submit" class="btn btn-success"  [disabled]="!form.valid && !editUser" (click)="onSubmit()">Success</button>
+    <button type="submit" class="btn btn-secondary" [routerLink]="['/']">Cancel</button>
   </div>
 </form>
