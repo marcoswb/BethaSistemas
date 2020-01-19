@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 
 @Component({
   selector: 'app-carousel',
@@ -13,8 +13,8 @@ export class CarouselComponent implements OnInit {
     {image: 'https://www.terakoya.work/wp-content/uploads/2019/01/mysql.jpg'},
     {image: 'https://froylancamacho.com/content/images/size/w2000/2019/02/docker.png'},
     {image: 'https://www.bootstrapdash.com/wp-content/uploads/2017/08/bootstrap-4-beta-whats-new.jpg'},
-  ];
-  showIndicator = true;
+  ]
+  showIndicator = true
 
   constructor() { }
 

@@ -4,7 +4,6 @@ import { ApiService } from '../api.service'
 import { User } from 'src/models/user'
 import { Observable } from 'rxjs'
 import { Router } from '@angular/router'
-import { Address } from 'src/models/address'
 
 @Component({
   selector: 'app-list-users',
@@ -25,7 +24,7 @@ export class ListUsersComponent implements OnInit {
   listAddress: any[] = []
   listTelephone: any[] = []
 
-  id: any
+  id: string = ''
 
   ngOnInit() {
     
@@ -49,7 +48,7 @@ export class ListUsersComponent implements OnInit {
   }
 
   onFindUserById() {
-    if(this.id != undefined) {
+    if(this.id.length != 0) {
       this.service.getUserById(this.id).subscribe(
         (response) => {
           if(response != undefined) {

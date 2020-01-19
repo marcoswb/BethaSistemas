@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { ActivatedRoute, Params } from '@angular/router'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 
 import { User } from 'src/models/user'
 import { Address } from 'src/models/address'
@@ -24,12 +24,13 @@ export class FormComponent implements OnInit {
 
   listAddress: Address[] = []
   listTelephone: Array<String> = []
-  indexSelect: number = -1;
+  indexSelect: number = -1
 
   constructor(
     private formBuilder: FormBuilder,
     private service: ApiService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -127,8 +128,9 @@ export class FormComponent implements OnInit {
     if(this.id != undefined) {
       this.service.updateUser(this.id ,this.user).subscribe(
         success => {
-          alert('Usuário atualizado!')
+          alert('Usuário atualizado com sucesso')
           this.resetForm()
+          this.router.navigate([''])
         },
         error => {
           alert('Erro ao atualizar Usuário!')
@@ -136,12 +138,19 @@ export class FormComponent implements OnInit {
       )
     } else {
       this.service.createUser(this.user).subscribe(
-        success => {
-          alert('Usuário cadastrado!')
-          this.resetForm()
+        (response) => {
+          if(response.id == 1) {
+            alert('Usuário já existe')
+          } else {
+            alert('Usuário cadastrado com sucesso!')
+            this.resetForm()
+          }
         },
         error => {
           alert('Erro ao cadastrar Usuário!')
+        },
+        () => {
+
         }
       )
     }
