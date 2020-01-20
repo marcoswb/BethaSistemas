@@ -9,30 +9,30 @@ import { Observable } from 'rxjs'
 })
 export class ApiService {
 
-  private readonly url = 'http://localhost:8095/'
+  private readonly url = 'http://localhost:8090/'
 
   constructor(private http: HttpClient) { }
 
-  getAllUsers(): Observable<User[]> {  
-    return this.http.get<User[]>(`${this.url}/users`); 
-  }  
+  getAllUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.url}/users`);
+  }
 
-  getUserById(userid): Observable<User> {  
+  getUserById(userid): Observable<User> {
     const apiurl = `${this.url}/users/${userid}`
     return this.http.get<User>(apiurl)
-  } 
+  }
 
-  createUser(user: User): Observable<User> {  
+  createUser(user: User): Observable<User> {
     return this.http.post<User>(`${this.url}/user`, user)
-  }  
+  }
 
-  updateUser(userid, user: User): Observable<User> {  
+  updateUser(userid, user: User): Observable<User> {
     const apiurl = `${this.url}/user/${userid}`
     return this.http.put<User>(apiurl, user)
-  }  
-  
-  deleteUser(userid): Observable<User> {  
+  }
+
+  deleteUser(userid): Observable<User> {
     const apiurl = `${this.url}/user/${userid}`
     return this.http.delete<User>(apiurl)
-  } 
+  }
 }

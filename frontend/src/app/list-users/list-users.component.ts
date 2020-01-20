@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
+import { BsModalRef } from 'ngx-bootstrap/modal'
 
 import { ApiService } from '../api.service'
 import { User } from 'src/models/user'
-import { Observable } from 'rxjs'
-import { Router } from '@angular/router'
+import { AlertModalService } from '../shared/alert-modal.service'
+
 
 @Component({
   selector: 'app-list-users',
@@ -14,7 +16,8 @@ export class ListUsersComponent implements OnInit {
 
   constructor(
     private service: ApiService,
-    private router: Router
+    private router: Router,
+    private alertService: AlertModalService
   ) { }
 
   users: User[] = []
@@ -26,8 +29,10 @@ export class ListUsersComponent implements OnInit {
 
   id: string = ''
 
+  bsModalRef: BsModalRef
+
   ngOnInit() {
-    
+
     this.onLoadAllUsers()
   }
 
@@ -35,6 +40,9 @@ export class ListUsersComponent implements OnInit {
     this.service.getAllUsers().subscribe(
       (response) => {
         this.convertFields(response)
+      },
+      error => {
+        this.handleMessageDanger('Erro ao listar alunos!')
       }
     )
   }
@@ -56,22 +64,22 @@ export class ListUsersComponent implements OnInit {
           }
         },
         error => {
-          alert('Usuário não existe!')
+          this.handleMessageDanger('Usuário não existe')
         }
       )
     } else {
-      alert('Digite um ID para pesquisa!');
+      this.handleMessageWarning('Digite um ID para pesquisa!');
     }
   }
 
   onRemoveUser(id) {
     this.service.deleteUser(id).subscribe(
       success => {
-        alert('Usuário apagado!')
+        this.handleMessageSuccess('Usuário apagado com sucesso!')
         this.onLoadAllUsers()
       },
       error => {
-        alert('Erro ao Apagar Usuário!')
+        this.handleMessageDanger('Erro ao apagar Usuário!')
       }
     )
   }
@@ -79,5 +87,16 @@ export class ListUsersComponent implements OnInit {
   onKeyPress(event) {
     this.id = event.target.value
   }
-  
+
+  handleMessageDanger(message) {
+    this.alertService.showAlertDanger(message)
+  }
+
+  handleMessageWarning(message) {
+    this.alertService.showAlertWarning(message)
+  }
+
+  handleMessageSuccess(message) {
+    this.alertService.showAlertSuccess(message)
+  }
 }

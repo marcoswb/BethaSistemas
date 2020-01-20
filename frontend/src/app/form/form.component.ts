@@ -5,6 +5,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router'
 import { User } from 'src/models/user'
 import { Address } from 'src/models/address'
 import { ApiService } from '../api.service'
+import { AlertModalService } from '../shared/alert-modal.service'
 
 @Component({
   selector: 'app-form',
@@ -16,11 +17,9 @@ export class FormComponent implements OnInit {
   form: FormGroup
   form_title: string = "Cadastrar Usuário"
   form_address: string = "Endereço"
-  
+
   id: number
   editUser: boolean = false
-  user: User
-  address: Address
 
   listAddress: Address[] = []
   listTelephone: Array<String> = []
@@ -30,10 +29,12 @@ export class FormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private service: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private alertService: AlertModalService
   ) { }
 
   ngOnInit() {
+
     this.form = this.formBuilder.group({
       name: [null, Validators.required],
       cpf_cnpj: [null, Validators.required],
@@ -41,7 +42,7 @@ export class FormComponent implements OnInit {
       telephone: [null, Validators.required],
     })
 
-    this.checkEditUser()    
+    this.checkEditUser()
   }
 
   checkEditUser() {
@@ -63,7 +64,8 @@ export class FormComponent implements OnInit {
        this.populateForm(response)
       },
       error => {
-        alert('Não foi possível encontrar o Usuário!')
+        this.handleMessageDanger('Não foi possível encontrar o usuário!')
+        this.router.navigate([''])
       }
     )
   }
@@ -80,12 +82,9 @@ export class FormComponent implements OnInit {
       cpf_cnpj_form = user.cnpj
     }
 
-    const convertAddress = JSON.parse(user.address)
-    const convertTelephone = JSON.parse(user.telephone)
+    this.listAddress = JSON.parse(user.address)
+    this.listTelephone = JSON.parse(user.telephone)
 
-    this.listAddress = convertAddress
-    this.listTelephone = convertTelephone
-    
     this.listAddress.map(address => {
       if(address.main = true) {
         this.indexSelect = address.id
@@ -106,8 +105,12 @@ export class FormComponent implements OnInit {
   onAddAddress() {
     let id = this.listAddress.length
 
-    this.address = new Address(id, this.form.value.address, false)
-    this.listAddress.push(this.address)    
+    const address = new Address(id, this.form.get('address').value, false)
+    this.listAddress.push(address)
+
+    this.form.patchValue({
+      address: ' '
+    })
   }
 
   onAddressMain(event) {
@@ -120,37 +123,43 @@ export class FormComponent implements OnInit {
   }
 
   onAddTelephone() {
-    this.listTelephone.push(this.form.value.telephone)
+    this.listTelephone.push(this.form.get('telephone').value)
+
+    this.form.patchValue({
+      telephone: ' '
+    })
   }
 
   onSubmit(){
-    this.user = this.checkFields()
-    if(this.id != undefined) {
-      this.service.updateUser(this.id ,this.user).subscribe(
+    let user = this.checkFields()
+
+    if(this.editUser == true) {
+      this.service.updateUser(this.id, user).subscribe(
         success => {
-          alert('Usuário atualizado com sucesso')
+          this.handleMessageSuccess('Usuário atualizado com sucesso!')
           this.resetForm()
           this.router.navigate([''])
         },
         error => {
-          alert('Erro ao atualizar Usuário!')
+          if(error.status == 404) {
+            this.handleMessageWarning('Esse usuário já existe no sistema!')
+          } else {
+            this.handleMessageDanger('Erro ao atualizar usuário!')
+          }
         }
       )
     } else {
-      this.service.createUser(this.user).subscribe(
+      this.service.createUser(user).subscribe(
         (response) => {
           if(response.id == 1) {
-            alert('Usuário já existe')
+            this.handleMessageWarning('Usuário já existe no sistema!')
           } else {
-            alert('Usuário cadastrado com sucesso!')
+            this.handleMessageSuccess('Usuário cadastrado com sucesso!')
             this.resetForm()
           }
         },
         error => {
-          alert('Erro ao cadastrar Usuário!')
-        },
-        () => {
-
+          this.handleMessageDanger('Erro ao cadastrar usuário!')
         }
       )
     }
@@ -168,7 +177,7 @@ export class FormComponent implements OnInit {
     } else if(this.form.get('cpf_cnpj').value.length <= 11) {
       cpf = this.form.get('cpf_cnpj').value
     }
-    
+
     if(this.listAddress.length < 1) {
       address = new Address(0, this.form.get('address').value, true)
       this.listAddress.push(address)
@@ -179,10 +188,10 @@ export class FormComponent implements OnInit {
       } else {
         this.listAddress[this.indexSelect].main = true
       }
-      
+
       address = JSON.stringify(this.listAddress)
     }
-    
+
     if(this.listTelephone.length < 1) {
       telephone = this.form.get('telephone').value
       this.listTelephone.push(telephone)
@@ -190,9 +199,9 @@ export class FormComponent implements OnInit {
     } else {
       telephone = JSON.stringify(this.listTelephone)
     }
-    
+
     const user = new User(1, name, cpf, cnpj, address, telephone)
-    
+
     return user
   }
 
@@ -203,7 +212,20 @@ export class FormComponent implements OnInit {
       address: null,
       telephone: null
     })
+
     this.listAddress = []
     this.listTelephone = []
+  }
+
+  handleMessageDanger(message) {
+    this.alertService.showAlertDanger(message)
+  }
+
+  handleMessageWarning(message) {
+    this.alertService.showAlertWarning(message)
+  }
+
+  handleMessageSuccess(message) {
+    this.alertService.showAlertSuccess(message)
   }
 }
