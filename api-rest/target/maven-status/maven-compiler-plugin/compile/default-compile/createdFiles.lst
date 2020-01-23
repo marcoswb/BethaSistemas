@@ -1,0 +1,4 @@
+com/betha/apirest/ApiRestApplication.class
+com/betha/apirest/models/User.class
+com/betha/apirest/repository/UserRepository.class
+com/betha/apirest/controllers/UserController.class

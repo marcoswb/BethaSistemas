@@ -1,0 +1,4 @@
+/home/marcos/Projetos/Docker/docker-teste/api-rest/src/main/java/com/betha/apirest/models/User.java
+/home/marcos/Projetos/Docker/docker-teste/api-rest/src/main/java/com/betha/apirest/repository/UserRepository.java
+/home/marcos/Projetos/Docker/docker-teste/api-rest/src/main/java/com/betha/apirest/controllers/UserController.java
+/home/marcos/Projetos/Docker/docker-teste/api-rest/src/main/java/com/betha/apirest/ApiRestApplication.java
