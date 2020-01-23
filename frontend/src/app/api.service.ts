@@ -9,7 +9,7 @@ import { Observable } from 'rxjs'
 })
 export class ApiService {
 
-  private readonly url = 'http://localhost:8090/'
+  private readonly url = 'http://localhost:8080'
 
   constructor(private http: HttpClient) { }
 
