@@ -5,25 +5,27 @@ import { ActivatedRoute, Params, Router } from '@angular/router'
 import { User } from 'src/models/user'
 import { Address } from 'src/models/address'
 import { ApiService } from '../api.service'
-import { AlertModalService } from '../shared/alert-modal.service'
+import { AlertModalService } from '../shared/alert-modal/alert-modal.service'
+
 
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css']
 })
+
 export class FormComponent implements OnInit {
 
   form: FormGroup
   form_title: string = "Cadastrar Usuário"
   form_address: string = "Endereço"
 
-  id: number
-  editUser: boolean = false
+  user_id: number
+  edit_user: boolean = false
 
-  listAddress: Address[] = []
-  listTelephone: Array<String> = []
-  indexSelect: number = -1
+  list_address: Address[] = []
+  list_telephone: Array<String> = []
+  index_select: number = -1
 
   constructor(
     private formBuilder: FormBuilder,
@@ -47,14 +49,14 @@ export class FormComponent implements OnInit {
 
   checkEditUser() {
     this.route.params.forEach((params: Params) => {
-      this.id = params['id']
+      this.user_id = params['id']
     })
 
-    if(this.id != undefined) {
+    if(this.user_id != undefined) {
       this.form_title = "Atualizar Usuário"
       this.form_address = "Endereço principal escolhido anteriormente"
-      this.editUser = true
-      this.getUserById(this.id)
+      this.edit_user = true
+      this.getUserById(this.user_id)
     }
   }
 
@@ -64,7 +66,7 @@ export class FormComponent implements OnInit {
        this.populateForm(response)
       },
       error => {
-        this.handleMessageDanger('Não foi possível encontrar o usuário!')
+        this.showMessageDanger('Não foi possível encontrar o usuário!')
         this.router.navigate([''])
       }
     )
@@ -82,17 +84,15 @@ export class FormComponent implements OnInit {
       cpf_cnpj_form = user.cnpj
     }
 
-    this.listAddress = JSON.parse(user.address)
-    this.listTelephone = JSON.parse(user.telephone)
+    this.list_address = JSON.parse(user.address)
+    this.list_telephone = JSON.parse(user.telephone)
 
-    this.listAddress.map(address => {
+    this.list_address.map(address => {
       if(address.main = true) {
-        this.indexSelect = address.id
+        this.index_select = address.id
         address_form = address.description
       }
     })
-
-    telephone_form = this.listTelephone[0]
 
     this.form.patchValue({
       name: name_form,
@@ -103,10 +103,10 @@ export class FormComponent implements OnInit {
   }
 
   onAddAddress() {
-    let id = this.listAddress.length
+    let id = this.list_address.length
 
     const address = new Address(id, this.form.get('address').value, false)
-    this.listAddress.push(address)
+    this.list_address.push(address)
 
     this.form.patchValue({
       address: ' '
@@ -114,37 +114,33 @@ export class FormComponent implements OnInit {
   }
 
   onAddressMain(event) {
-    this.listAddress.map((address, index) => {
-      this.listAddress[index].main = false
+    this.list_address.map((address, index) => {
+      this.list_address[index].main = false
     })
 
-    const selectOption = event.target['options']
-    this.indexSelect = selectOption.selectedIndex
+    const select_option = event.target['options']
+    this.index_select = select_option.selectedIndex
   }
 
   onAddTelephone() {
-    this.listTelephone.push(this.form.get('telephone').value)
-
-    this.form.patchValue({
-      telephone: ' '
-    })
+    this.list_telephone.push(this.form.get('telephone').value)
   }
 
   onSubmit(){
     let user = this.checkFields()
 
-    if(this.editUser == true) {
-      this.service.updateUser(this.id, user).subscribe(
+    if(this.edit_user == true) {
+      this.service.updateUser(this.user_id, user).subscribe(
         success => {
-          this.handleMessageSuccess('Usuário atualizado com sucesso!')
+          this.showMessageSuccess('Usuário atualizado com sucesso!')
           this.resetForm()
           this.router.navigate([''])
         },
         error => {
           if(error.status == 404) {
-            this.handleMessageWarning('Esse usuário já existe no sistema!')
+            this.showMessageWarning('Esse usuário já existe no sistema!')
           } else {
-            this.handleMessageDanger('Erro ao atualizar usuário!')
+            this.showMessageDanger('Erro ao atualizar usuário!')
           }
         }
       )
@@ -152,14 +148,14 @@ export class FormComponent implements OnInit {
       this.service.createUser(user).subscribe(
         (response) => {
           if(response.id == 1) {
-            this.handleMessageWarning('Usuário já existe no sistema!')
+            this.showMessageWarning('Usuário já existe no sistema!')
           } else {
-            this.handleMessageSuccess('Usuário cadastrado com sucesso!')
+            this.showMessageSuccess('Usuário cadastrado com sucesso!')
             this.resetForm()
           }
         },
         error => {
-          this.handleMessageDanger('Erro ao cadastrar usuário!')
+          this.showMessageDanger('Erro ao cadastrar usuário!')
         }
       )
     }
@@ -172,33 +168,30 @@ export class FormComponent implements OnInit {
     let address = null
     let telephone = null
 
-    if(this.form.get('cpf_cnpj').value.length >= 14) {
+    if(this.form.get('cpf_cnpj').value.length > 11) {
       cnpj = this.form.get('cpf_cnpj').value
-    } else if(this.form.get('cpf_cnpj').value.length <= 11) {
+    } else if(this.form.get('cpf_cnpj').value.length == 11) {
       cpf = this.form.get('cpf_cnpj').value
     }
 
-    if(this.listAddress.length < 1) {
+    if(this.list_address.length < 1) {
       address = new Address(0, this.form.get('address').value, true)
-      this.listAddress.push(address)
-      address = JSON.stringify(this.listAddress)
+      this.list_address.push(address)
     } else {
-      if(this.indexSelect == -1) {
-        this.listAddress[0].main = true
+      if(this.index_select == -1) {
+        this.list_address[0].main = true
       } else {
-        this.listAddress[this.indexSelect].main = true
+        this.list_address[this.index_select].main = true
       }
-
-      address = JSON.stringify(this.listAddress)
     }
 
-    if(this.listTelephone.length < 1) {
+    if(this.list_telephone.length < 1) {
       telephone = this.form.get('telephone').value
-      this.listTelephone.push(telephone)
-      telephone = JSON.stringify(this.listTelephone)
-    } else {
-      telephone = JSON.stringify(this.listTelephone)
+      this.list_telephone.push(telephone)
     }
+
+    address = JSON.stringify(this.list_address)
+    telephone = JSON.stringify(this.list_telephone)
 
     const user = new User(1, name, cpf, cnpj, address, telephone)
 
@@ -213,19 +206,23 @@ export class FormComponent implements OnInit {
       telephone: null
     })
 
-    this.listAddress = []
-    this.listTelephone = []
+    this.list_address = []
+    this.list_telephone = []
   }
 
-  handleMessageDanger(message) {
+  onCancel() {
+    this.router.navigate([''])
+  }
+
+  showMessageDanger(message) {
     this.alertService.showAlertDanger(message)
   }
 
-  handleMessageWarning(message) {
+  showMessageWarning(message) {
     this.alertService.showAlertWarning(message)
   }
 
-  handleMessageSuccess(message) {
+  showMessageSuccess(message) {
     this.alertService.showAlertSuccess(message)
   }
 }

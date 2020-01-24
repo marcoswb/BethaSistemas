@@ -1,63 +1,83 @@
 <div class="card mt-3">
-    <div class="card-header">
-      <div class="float-left">
-        <h4>Usuários</h4>
-      </div>
-      <div class="float-right">
-        <button type="button" class="btn btn-primary" [routerLink]="['/add-user']">Novo Usuário</button>{{' '}}
-        <button type="button" class="btn btn-secondary" (click)="onLoadAllUsers()">Carregar Usuários</button>{{''}}
-        <button type="button" class="btn btn-secondary" (click)="onFindUserById()">Pesquisar</button>
-      </div>
+  <div class="card-header">
+    <div class="float-left">
+      <h4>Usuários Cadastrados</h4>
     </div>
-    <div class="card-body">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>id</th>
-            <th>Nome</th>
-            <th>CPF</th>
-            <th>CNPJ</th>
-            <th>Endereços</th>
-            <th>Telefones</th>
-            <th colspan="2">
-              <input 
-                type="text" 
-                class="form-control" 
-                id="id_user" 
-                placeholder="Pesquisa por id"
-                required
-                (keyup)="onKeyPress($event)">
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr  *ngFor="let user of users">
-            <td> {{ user.id }} </td>
-            <td> {{ user.name }} </td>
-            <td> {{ user.cpf }} </td>
-            <td> {{ user.cnpj }} </td>
-            <td>
-              <div *ngFor="let address of user.address">
-                {{ address.description }}
-              </div>
-            </td>
-            <td>
-               <div *ngFor="let telephone of user.telephone">
-                  {{ telephone }}
-               </div> 
-            </td>
-            <td>
-              <button class="btn btn-outline-warning mb-1 btn-sm" [routerLink]="['/edit-user/', user.id]">
-              Atualizar
-              </button>
-            </td>
-            <td>
-              <button class="btn btn-outline-danger mb-1 btn-sm" (click)="onRemoveUser(user.id)">
-                Remover
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="float-right">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onNewUser()">
+        Novo Usuário
+      </button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="onLoadAllUsers()">
+        Recarregar Usuários
+      </button>
+      <button
+        type="button"
+        class="btn btn-info"
+        (click)="onFindUserById()">
+        Pesquisar
+      </button>
     </div>
   </div>
+  <div class="card-body">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>CNPJ</th>
+          <th colspan="2">Endereços</th>
+          <th>Telefones</th>
+          <th>
+            <input
+              type="number"
+              class="form-control"
+              id="id_user"
+              placeholder="Pesquisa por id"
+              required
+              (keyup)="onKeyPress($event)"
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td> {{ user.id }} </td >
+          <td> {{ user.name }} </td>
+          <td> {{ user.cpf }} </td>
+          <td> {{ user.cnpj }} </td>
+          <td colspan="2">
+            <div *ngFor="let address of user.address">
+              <p> {{ address.description }} </p>
+            </div>
+          </td>
+          <td>
+              <div *ngFor="let telephone of user.telephone">
+                <p> {{ telephone }} </p>
+              </div>
+          </td>
+          <td class="button-form">
+            <button
+              class="btn btn-outline-warning mb-1 btn-sm"
+              (click)="onUpdateUser(user.id)">
+              Atualizar
+            </button>
+
+            <button
+              class="btn btn-outline-danger mb-1 btn-sm"
+              (click)="onRemoveUser(user.id)">
+              Remover
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

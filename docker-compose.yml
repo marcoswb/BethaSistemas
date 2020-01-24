@@ -24,19 +24,19 @@ services:
             - api-rest-database
         network_mode: "host"
 
-    api-rest-angular:
-        container_name: api-rest-angular
-        image: angular
-        build:
-            context: ./frontend
-            dockerfile: ./Dockerfile
-        volumes:
-            - /data/angular
-        depends_on: 
-            - api-rest-spring
-        ports:
-            - "4200:4200"
-        network_mode: "host"
+   # api-rest-angular:
+   #     container_name: api-rest-angular
+   #     image: angular
+   #     build:
+   #         context: ./frontend
+   #         dockerfile: ./Dockerfile
+   #     volumes:
+   #         - /data/angular
+   #     depends_on: 
+   #         - api-rest-spring
+   #     ports:
+   #         - "4200:4200"
+   #     network_mode: "host"
 
 volumes:
     data:

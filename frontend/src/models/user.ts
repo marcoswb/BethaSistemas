@@ -1,5 +1,5 @@
 export class User{
-    
+
     constructor(
         public id: number,
         public name: string,
@@ -7,7 +7,5 @@ export class User{
         public cnpj: string,
         public address: string,
         public telephone: string,
-    ) {
-        
-    }
+    ) {}
 }

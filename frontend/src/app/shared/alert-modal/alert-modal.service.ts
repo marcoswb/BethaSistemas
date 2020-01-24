@@ -1,7 +1,9 @@
-import { BsModalRef } from 'ngx-bootstrap/modal/public_api'
-import { AlertModalComponent } from './alert-modal/alert-modal.component'
-import { BsModalService } from 'ngx-bootstrap/modal'
 import { Injectable } from '@angular/core'
+import { BsModalRef } from 'ngx-bootstrap/modal/public_api'
+import { BsModalService } from 'ngx-bootstrap/modal'
+
+import { AlertModalComponent } from './alert-modal.component'
+
 
 enum AlertTypes {
   SUCCESS = 'success',
@@ -16,7 +18,7 @@ export class AlertModalService {
 
   constructor(private modalService: BsModalService) { }
 
-  private showAlert(message: string, type: AlertTypes) {
+  private showAlert(message: String, type: AlertTypes) {
     const bsModalRef: BsModalRef = this.modalService.show(AlertModalComponent)
     bsModalRef.content.type = type
     bsModalRef.content.message = message

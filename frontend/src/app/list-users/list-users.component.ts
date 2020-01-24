@@ -4,7 +4,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal'
 
 import { ApiService } from '../api.service'
 import { User } from 'src/models/user'
-import { AlertModalService } from '../shared/alert-modal.service'
+import { AlertModalService } from '../shared/alert-modal/alert-modal.service'
 
 
 @Component({
@@ -12,6 +12,7 @@ import { AlertModalService } from '../shared/alert-modal.service'
   templateUrl: './list-users.component.html',
   styleUrls: ['./list-users.component.css']
 })
+
 export class ListUsersComponent implements OnInit {
 
   constructor(
@@ -21,15 +22,7 @@ export class ListUsersComponent implements OnInit {
   ) { }
 
   users: User[] = []
-  addressJson: string[] = []
-  telephoneJson: string[] = []
-
-  listAddress: any[] = []
-  listTelephone: any[] = []
-
-  id: string = ''
-
-  bsModalRef: BsModalRef
+  find_id: string = ''
 
   ngOnInit() {
 
@@ -42,7 +35,7 @@ export class ListUsersComponent implements OnInit {
         this.convertFields(response)
       },
       error => {
-        this.handleMessageDanger('Erro ao listar alunos!')
+        this.showMessageDanger('Erro ao listar alunos!')
       }
     )
   }
@@ -56,47 +49,57 @@ export class ListUsersComponent implements OnInit {
   }
 
   onFindUserById() {
-    if(this.id.length != 0) {
-      this.service.getUserById(this.id).subscribe(
+    if(this.find_id.length != 0) {
+      this.service.getUserById(this.find_id).subscribe(
         (response) => {
           if(response != undefined) {
             this.router.navigate(['edit-user', response.id])
+          } else {
+            this.showMessageDanger('Usuário não existe!')
           }
         },
         error => {
-          this.handleMessageDanger('Usuário não existe')
+          this.showMessageDanger('Usuário não existe!')
         }
       )
     } else {
-      this.handleMessageWarning('Digite um ID para pesquisa!');
+      this.showMessageWarning('Digite um ID para pesquisa!');
     }
+  }
+
+  onNewUser() {
+    this.router.navigate(['/add-user'])
+  }
+
+  onUpdateUser(id) {
+    this.router.navigate(['/edit-user/', id])
   }
 
   onRemoveUser(id) {
     this.service.deleteUser(id).subscribe(
       success => {
-        this.handleMessageSuccess('Usuário apagado com sucesso!')
+        this.showMessageSuccess('Usuário apagado com sucesso!')
         this.onLoadAllUsers()
       },
       error => {
-        this.handleMessageDanger('Erro ao apagar Usuário!')
+        this.showMessageDanger('Erro ao apagar Usuário!')
       }
     )
   }
 
   onKeyPress(event) {
-    this.id = event.target.value
+    this.find_id = event.target.value
   }
 
-  handleMessageDanger(message) {
+  showMessageDanger(message) {
     this.alertService.showAlertDanger(message)
   }
 
-  handleMessageWarning(message) {
+  showMessageWarning(message) {
     this.alertService.showAlertWarning(message)
   }
 
-  handleMessageSuccess(message) {
+  showMessageSuccess(message) {
     this.alertService.showAlertSuccess(message)
   }
 }
