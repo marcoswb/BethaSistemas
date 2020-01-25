@@ -1,0 +1,12 @@
+navbar {
+  position: absolute;
+  display: block;
+}
+
+nav a {
+  color: #FFF;
+}
+
+nav a:hover {
+  color: rgb(226, 11, 11);
+}

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core'
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -9,8 +10,16 @@ import { Component, OnInit } from '@angular/core'
 
 export class EditUserComponent implements OnInit {
 
-  constructor() {}
+  constructor(private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.verifyAuthorization()
+  }
 
+  verifyAuthorization() {
+    const authorization = sessionStorage.getItem("authorization")
+    if(authorization == "false") {
+      this.router.navigate([""])
+    }
+  }
 }

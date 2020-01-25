@@ -1,9 +1,19 @@
-h3 {
-    color: rgb(57, 57, 192);
+:host {
+  width: 100vw;
+  height: 100vh;
 }
 
-form {
-    width: 500px;
+.container {
+  top: 40%;
+  left: 50%;
+  width: 70%;
+  padding: 50px;
+}
+
+h3 {
+  text-align: center;
+  color: rgb(57, 57, 192);
+  padding-bottom: 30px;
 }
 
 form button {

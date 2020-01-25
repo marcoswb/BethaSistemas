@@ -1,8 +1,9 @@
 slide {
-    height: 350px;
+  height: 400px;
 }
 
 slide img {
-    display: block; 
-    width: 100%;
+  padding-top: 0.2%;
+  position: relative;
+  width: 100%;
 }

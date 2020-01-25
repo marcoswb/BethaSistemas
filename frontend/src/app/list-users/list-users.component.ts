@@ -70,10 +70,6 @@ export class ListUsersComponent implements OnInit {
     }
   }
 
-  onNewUser() {
-    this.router.navigate(['/add-user'])
-  }
-
   onUpdateUser(id) {
     this.router.navigate(['/edit-user/', id])
   }

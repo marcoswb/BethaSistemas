@@ -19,7 +19,7 @@
         type="text"
         class="form-control"
         id="cpf_cnpj"
-        placeholder="Ex.: 000.000.000-00"
+        placeholder="Somente números"
         formControlName="cpf_cnpj"
         required
         aria-describedby="cpf_cnpjHelp"
@@ -65,7 +65,7 @@
         type="text"
         class="form-control"
         id="telephone"
-        placeholder="Insira seu Telefone"
+        placeholder="Somente números"
         formControlName="telephone"
         pattern="[Z0-9]+"
         minlength=8
@@ -90,13 +90,13 @@
         class="btn btn-success"
         [disabled]="!form.valid && !edit_user"
         (click)="onSubmit()">
-        Success
+        Enviar
       </button>
       <button
         type="submit"
         class="btn btn-secondary"
         (click)="onCancel()">
-        Cancel
+        Cancelar
       </button>
     </div>
   </form>

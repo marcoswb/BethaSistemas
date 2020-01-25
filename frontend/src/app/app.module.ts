@@ -16,7 +16,9 @@ import { AddUserComponent } from './add-user/add-user.component'
 import { EditUserComponent } from './edit-user/edit-user.component'
 import { ListUsersComponent } from './list-users/list-users.component'
 import { HomeComponent } from './home/home.component'
-import { SharedModule } from './shared/shared.module'
+import { SharedModule } from './shared/shared.module';
+import { LoginComponent } from './login/login.component';
+import { NavbarComponent } from './navbar/navbar.component'
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import { SharedModule } from './shared/shared.module'
     AddUserComponent,
     EditUserComponent,
     ListUsersComponent,
-    HomeComponent
+    HomeComponent,
+    LoginComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

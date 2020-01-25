@@ -139,7 +139,7 @@ export class FormComponent implements OnInit {
         success => {
           this.showMessageSuccess('Usuário atualizado com sucesso!')
           this.resetForm()
-          this.router.navigate([''])
+          this.router.navigate(['home'])
         },
         error => {
           if(error.status == 404) {
@@ -216,7 +216,7 @@ export class FormComponent implements OnInit {
   }
 
   onCancel() {
-    this.router.navigate([''])
+    this.router.navigate(['home'])
   }
 
   showMessageDanger(message) {

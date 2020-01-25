@@ -1,4 +1,7 @@
+/home/marcos/Projetos/Betha/api-rest/src/main/java/com/betha/apirest/models/Login.java
 /home/marcos/Projetos/Betha/api-rest/src/main/java/com/betha/apirest/ApiRestApplication.java
+/home/marcos/Projetos/Betha/api-rest/src/main/java/com/betha/apirest/repository/LoginRepository.java
 /home/marcos/Projetos/Betha/api-rest/src/main/java/com/betha/apirest/repository/UserRepository.java
 /home/marcos/Projetos/Betha/api-rest/src/main/java/com/betha/apirest/controllers/UserController.java
 /home/marcos/Projetos/Betha/api-rest/src/main/java/com/betha/apirest/models/User.java
+/home/marcos/Projetos/Betha/api-rest/src/main/java/com/betha/apirest/controllers/LoginController.java

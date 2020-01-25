@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router'
 import { AddUserComponent } from './add-user/add-user.component'
 import { EditUserComponent } from './edit-user/edit-user.component'
 import { HomeComponent } from './home/home.component'
+import { LoginComponent } from './login/login.component';
 
 
 const routes: Routes = [
@@ -18,8 +19,14 @@ const routes: Routes = [
     data: { title: 'Editar usuário' }
   },
   {
+    path: 'home',
+    component: HomeComponent,
+    data: { title: 'Home page' }
+  },
+  {
     path: '',
-    component: HomeComponent
+    component: LoginComponent,
+    data: { title: 'Login Usuário' }
   }
 ]
 
