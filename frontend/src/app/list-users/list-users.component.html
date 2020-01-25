@@ -19,6 +19,7 @@
       <button
         type="button"
         class="btn btn-info"
+        [disabled]="find_id.length == 0"
         (click)="onFindUserById()">
         Pesquisar
       </button>

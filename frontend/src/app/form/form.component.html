@@ -10,6 +10,7 @@
         id="name"
         placeholder="Insira seu nome"
         formControlName="name"
+        required
       />
     </div>
     <div class="form-group">
@@ -18,7 +19,7 @@
         type="text"
         class="form-control"
         id="cpf_cnpj"
-        placeholder="Insira seu CPF ou CNPJ"
+        placeholder="Ex.: 000.000.000-00"
         formControlName="cpf_cnpj"
         required
         aria-describedby="cpf_cnpjHelp"
@@ -39,6 +40,7 @@
         id="address"
         placeholder="Insira seu Endereço"
         formControlName="address"
+        required
       />
       <button
         type="button"
@@ -67,6 +69,7 @@
         formControlName="telephone"
         pattern="[Z0-9]+"
         minlength=8
+        required
       />
       <button
         type="button"

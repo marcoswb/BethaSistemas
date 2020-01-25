@@ -63,11 +63,16 @@ export class FormComponent implements OnInit {
   getUserById(id) {
     this.service.getUserById(id).subscribe(
       (response) => {
-       this.populateForm(response)
+        this.populateForm(response)
       },
       error => {
-        this.showMessageDanger('Não foi possível encontrar o usuário!')
-        this.router.navigate([''])
+        if(error.status == 404) {
+          this.showMessageWarning('Usuário não existe no sistema!')
+          this.router.navigate([''])
+        } else {
+          this.showMessageDanger('Erro ao buscar usuário!')
+          this.router.navigate([''])
+        }
       }
     )
   }
@@ -146,16 +151,16 @@ export class FormComponent implements OnInit {
       )
     } else {
       this.service.createUser(user).subscribe(
-        (response) => {
-          if(response.id == 1) {
-            this.showMessageWarning('Usuário já existe no sistema!')
-          } else {
-            this.showMessageSuccess('Usuário cadastrado com sucesso!')
-            this.resetForm()
-          }
+        success => {
+          this.showMessageSuccess('Usuário cadastrado com sucesso!')
+          this.resetForm()
         },
         error => {
-          this.showMessageDanger('Erro ao cadastrar usuário!')
+          if(error.status == 404) {
+            this.showMessageWarning('Esse usuário já existe no sistema!')
+          } else {
+            this.showMessageDanger('Erro ao cadastrar usuário!')
+          }
         }
       )
     }

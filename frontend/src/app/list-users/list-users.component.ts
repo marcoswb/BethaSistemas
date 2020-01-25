@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
-import { BsModalRef } from 'ngx-bootstrap/modal'
 
 import { ApiService } from '../api.service'
 import { User } from 'src/models/user'
@@ -35,7 +34,11 @@ export class ListUsersComponent implements OnInit {
         this.convertFields(response)
       },
       error => {
-        this.showMessageDanger('Erro ao listar alunos!')
+        if(error.status == 404) {
+          this.showMessageWarning('Nenhum usuário cadastrado no sistema!')
+        } else {
+          this.showMessageDanger('Erro ao listar alunos!')
+        }
       }
     )
   }
@@ -52,14 +55,14 @@ export class ListUsersComponent implements OnInit {
     if(this.find_id.length != 0) {
       this.service.getUserById(this.find_id).subscribe(
         (response) => {
-          if(response != undefined) {
-            this.router.navigate(['edit-user', response.id])
-          } else {
-            this.showMessageDanger('Usuário não existe!')
-          }
+          this.router.navigate(['edit-user', response.id])
         },
         error => {
-          this.showMessageDanger('Usuário não existe!')
+          if(error.status == 404) {
+            this.showMessageWarning('Usuário não existe no sistema!')
+          } else {
+            this.showMessageDanger('Erro ao buscar usuário!')
+          }
         }
       )
     } else {
@@ -79,10 +82,14 @@ export class ListUsersComponent implements OnInit {
     this.service.deleteUser(id).subscribe(
       success => {
         this.showMessageSuccess('Usuário apagado com sucesso!')
-        this.onLoadAllUsers()
+        window.location.reload()
       },
       error => {
-        this.showMessageDanger('Erro ao apagar Usuário!')
+        if(error.status == 404) {
+          this.showMessageWarning('Usuário não existe no sistema!')
+        } else {
+          this.showMessageDanger('Erro ao apagar usuário!')
+        }
       }
     )
   }

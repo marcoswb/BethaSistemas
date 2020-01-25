@@ -27,21 +27,21 @@ export class ApiService {
     return this.http.get<User>(url)
   }
 
-  createUser(user: User): Observable<User> {
+  createUser(user: User): Observable<User>{
     const url = `${this.base_url}/user`
 
     return this.http.post<User>(url, user)
   }
 
-  updateUser(user_id, user: User): Observable<User> {
+  updateUser(user_id, user: User): Observable<Object> {
     const url = `${this.base_url}/user/${user_id}`
 
-    return this.http.put<User>(url, user)
+    return this.http.put<Object>(url, user)
   }
 
-  deleteUser(user_id): Observable<User> {
+  deleteUser(user_id): Observable<Object> {
     const url = `${this.base_url}/user/${user_id}`
 
-    return this.http.delete<User>(url)
+    return this.http.delete<Object>(url)
   }
 }
