@@ -1,4 +1,4 @@
-# BethaSistemas
+# Projeto Técnico
 
 ## Linguagens utilizadas
 
