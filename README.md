@@ -3,7 +3,6 @@
 ## Linguagens utilizadas
 
 1. Java
-1. MySQL
 1. TypeScript
 1. CSS
 1. HTML
@@ -11,6 +10,7 @@
 ## Tecnologias aplicadas
 
 * Spring Boot
+* MySQL
 * Angular
 * Bootstrap
 * Docker
