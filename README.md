@@ -17,7 +17,7 @@
 
 ## Executar o Sistema
 
-* Primeiro vamos verificar se as portas 3306, 8080 e 4200 estão livres, pois serão utilizadas pelo sistema
+* Primeiro vamos verificar se as portas 3306, 8080 e 4200 da máquina estão livres, pois serão utilizadas pelo sistema
   * **Comandos linux:**
     * Para ver se algum serviço está utilizando a porta execute `sudo netstat -tlpn | grep <numero-da-porta>`.
 
