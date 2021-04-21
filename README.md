@@ -1,5 +1,3 @@
-# Projeto Técnico
-
 ## Linguagens utilizadas
 
 1. Java
